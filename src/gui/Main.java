@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import funcoes.Deslocamento;
+import funcoes.Embaralhamento;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -27,9 +28,13 @@ public class Main extends JFrame {
 	private JPanel contentPane;
 	private JTextArea taEntrada;
 	private JTextArea taSaida;
+	
 	private JSpinner spinConstShift;
 	private JSpinner spinVarShift;
 	private JSpinner spinLimite;
+	
+	private JSpinner spinReord;
+	private JSpinner spinLimiteReord;
 
 	/**
 	 * Launch the application.
@@ -118,6 +123,24 @@ public class Main extends JFrame {
 		spinLimite.setBounds(140, 323, 50, 20);
 		contentPane.add(spinLimite);
 		
+		JLabel lblOrdenacao = new JLabel("Ordena\u00E7\u00E3o");
+		lblOrdenacao.setBounds(200, 261, 140, 20);
+		contentPane.add(lblOrdenacao);
+		
+		spinReord = new JSpinner();
+		spinReord.setModel(new SpinnerNumberModel(0, 0, 479001599, 1));
+		spinReord.setBounds(350, 261, 50, 20);
+		contentPane.add(spinReord);
+		
+		JLabel lblCaracteresReordenados = new JLabel("Caracteres reordenados");
+		lblCaracteresReordenados.setBounds(200, 292, 140, 20);
+		contentPane.add(lblCaracteresReordenados);
+		
+		spinLimiteReord = new JSpinner();
+		spinLimiteReord.setModel(new SpinnerNumberModel(new Byte((byte) 0), new Byte((byte) 0), new Byte((byte) 12), new Byte((byte) 1)));
+		spinLimiteReord.setBounds(350, 292, 50, 20);
+		contentPane.add(spinLimiteReord);
+		
 		JButton btnCriptografar = new JButton("Criptografar");
 		btnCriptografar.addMouseListener(new MouseAdapter() {
 			@Override
@@ -125,6 +148,8 @@ public class Main extends JFrame {
 				criptografar();
 			}
 		});
+		btnCriptografar.setBounds(414, 261, 110, 20);
+		contentPane.add(btnCriptografar);
 		
 		JButton btnAleatorio = new JButton("Aleat\u00F3rio");
 		btnAleatorio.addMouseListener(new MouseAdapter() {
@@ -135,8 +160,6 @@ public class Main extends JFrame {
 		});
 		btnAleatorio.setBounds(414, 322, 110, 20);
 		contentPane.add(btnAleatorio);
-		btnCriptografar.setBounds(414, 261, 110, 20);
-		contentPane.add(btnCriptografar);
 		
 		JButton btnReverter = new JButton("Reverter");
 		btnReverter.addMouseListener(new MouseAdapter() {
@@ -149,19 +172,32 @@ public class Main extends JFrame {
 		contentPane.add(btnReverter);
 	}
 	
+	private void criptografar() {
+		String saida = taEntrada.getText();
+		saida = Deslocamento.deslocamento(taEntrada.getText(), (int)spinConstShift.getValue(),
+				(int)spinVarShift.getValue(), (int)spinLimite.getValue());
+		if ((byte)spinLimiteReord.getValue() > 0) {
+			saida = Embaralhamento.embaralhar(saida, (int)spinReord.getValue(), (byte)spinLimiteReord.getValue(), true);
+		}
+		taSaida.setText(saida);
+	}
+	
+	private void reverter() {
+		String saida = taEntrada.getText();
+		if ((byte)spinLimiteReord.getValue() > 0) {
+			saida = Embaralhamento.embaralhar(saida, (int)spinReord.getValue(), (byte)spinLimiteReord.getValue(), false);
+		}
+		saida = Deslocamento.deslocamento(saida, -(int)spinConstShift.getValue(),
+				-(int)spinVarShift.getValue(), (int)spinLimite.getValue());
+		
+		taSaida.setText(saida);
+	}
+	
 	private void aleatorio() {
 		spinConstShift.setValue(random.nextInt(1000));
 		spinLimite.setValue(random.nextInt(1000));
 		spinVarShift.setValue(random.nextInt((int)spinLimite.getValue() * 2) - (int)spinLimite.getValue());
-	}
-	
-	private void criptografar() {
-		taSaida.setText(Deslocamento.deslocamento(taEntrada.getText(), (int)spinConstShift.getValue(),
-				(int)spinVarShift.getValue(), (int)spinLimite.getValue()));
-	}
-	
-	private void reverter() {
-		taSaida.setText(Deslocamento.deslocamento(taEntrada.getText(), -(int)spinConstShift.getValue(),
-				-(int)spinVarShift.getValue(), (int)spinLimite.getValue()));
+		spinLimiteReord.setValue((byte)random.nextInt(13));
+		spinReord.setValue(random.nextInt(Embaralhamento.fatorial((byte)spinLimiteReord.getValue())));
 	}
 }
