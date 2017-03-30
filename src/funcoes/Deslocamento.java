@@ -40,16 +40,9 @@ public class Deslocamento {
 	}
 	
 	private static char trocaForm(char entrada, int shift) {
-		shift %= 8;
-		while (shift-- > 0) {
-			if (entrada == '.') entrada = '\n';
-			else if (entrada == '\n') entrada = ',';
-			else if (entrada == ',') entrada = '-';
-			else if (entrada == '-') entrada = '\\';
-			else if (entrada == '\\') entrada = '	';
-			else if (entrada == '	') entrada = '/';
-			else if (entrada == '/') entrada = ' ';
-			else if (entrada == ' ') entrada = '.';
+		entrada = (char)(entrada + shift);
+		while (maiuscula(entrada) || minuscula(entrada)) {
+			entrada += 26;
 		}
 		return entrada;
 	}

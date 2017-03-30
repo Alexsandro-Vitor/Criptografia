@@ -155,12 +155,13 @@ public class Main extends JFrame {
 		spinVarShift.setValue(random.nextInt((int)spinLimite.getValue() * 2) - (int)spinLimite.getValue());
 	}
 	
-	private void reverter() {
-		spinConstShift.setValue(-(int)spinConstShift.getValue());
-		spinVarShift.setValue(-(int)spinVarShift.getValue());
+	private void criptografar() {
+		taSaida.setText(Deslocamento.deslocamento(taEntrada.getText(), (int)spinConstShift.getValue(),
+				(int)spinVarShift.getValue(), (int)spinLimite.getValue()));
 	}
 	
-	private void criptografar() {
-		taSaida.setText(Deslocamento.deslocamento(taEntrada.getText(), (int)spinConstShift.getValue(), (int)spinVarShift.getValue(), (int)spinLimite.getValue()));
+	private void reverter() {
+		taSaida.setText(Deslocamento.deslocamento(taEntrada.getText(), -(int)spinConstShift.getValue(),
+				-(int)spinVarShift.getValue(), (int)spinLimite.getValue()));
 	}
 }
